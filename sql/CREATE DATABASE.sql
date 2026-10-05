@@ -1,0 +1,3 @@
+CREATE DATABASE steamDB;
+
+USE steamDB;
