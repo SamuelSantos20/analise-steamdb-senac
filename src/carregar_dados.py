@@ -5,7 +5,7 @@ import mysql.connector
 def conectar():
     # conexão com o banco de dados
     return mysql.connector.connect(
-        host="localhost",
+        host="127.0.0.1",
         user="root",
         password="",
         database="steamdb"
@@ -14,7 +14,7 @@ def conectar():
 
 def ler_csv(caminho_arquivo, colunas):
     """Lê o CSV, valida as colunas esperadas e troca NaN por None (NULL no MySQL)."""
-    df = pd.read_csv(caminho_arquivo, sep=';', encoding='utf-8')
+    df = pd.read_csv(caminho_arquivo, sep=';', encoding='utf-8', decimal=',')
 
     faltando = [c for c in colunas if c not in df.columns]
     if faltando:
@@ -51,6 +51,11 @@ def carregar_jogos(caminho_arquivo):
         'recomendacoes', 'metacritic_score', 'tempo_medio_jogo', 'tempo_mediano_jogo'
     ]
     df = ler_csv(caminho_arquivo, colunas)
+
+    # O CSV traz dd/mm/aaaa; o MySQL espera aaaa-mm-dd (datas inválidas viram NULL)
+    datas = pd.to_datetime(df['data_lancamento'], format='%d/%m/%Y', errors='coerce')
+    df['data_lancamento'] = datas.dt.strftime('%Y-%m-%d').astype(object)
+    df = df.where(pd.notnull(df), None)
 
     sql = """
         INSERT INTO jogos (
@@ -98,7 +103,7 @@ def carregar_plataformas(caminho_arquivo):
 # main
 if __name__ == "__main__":
     # Caminhos para onde estão os CSVs
-    carregar_jogos(r"")
-    carregar_generos(r"")
-    carregar_idiomas(r"")
-    carregar_plataformas(r"")
+    carregar_jogos(r"C:\Users\samue\OneDrive\Documentos\SteamDB (Senac)\jogos.csv")
+    carregar_generos(r"C:\Users\samue\OneDrive\Documentos\SteamDB (Senac)\generos.csv")
+    carregar_idiomas(r"C:\Users\samue\OneDrive\Documentos\SteamDB (Senac)\idiomas.csv")
+    carregar_plataformas(r"C:\Users\samue\OneDrive\Documentos\SteamDB (Senac)\plataformas.csv")
