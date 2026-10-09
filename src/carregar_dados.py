@@ -109,7 +109,7 @@ def carregar_plataformas(caminho_arquivo):
 # main
 if __name__ == "__main__":
     # Caminhos para onde estão os CSVs
-    carregar_jogos(r"C:\Users\samue\OneDrive\Documentos\SteamDB (Senac)\jogos.csv")
-    carregar_generos(r"C:\Users\samue\OneDrive\Documentos\SteamDB (Senac)\generos.csv")
-    carregar_idiomas(r"C:\Users\samue\OneDrive\Documentos\SteamDB (Senac)\idiomas.csv")
-    carregar_plataformas(r"C:\Users\samue\OneDrive\Documentos\SteamDB (Senac)\plataformas.csv")
+    carregar_jogos(r"")
+    carregar_generos(r"")
+    carregar_idiomas(r"")
+    carregar_plataformas(r"")
