@@ -19,7 +19,6 @@ def conectar():
 
 
 def ler_csv(caminho_arquivo, colunas):
-    """Lê o CSV, valida as colunas esperadas e troca NaN por None (NULL no MySQL)."""
     df = pd.read_csv(caminho_arquivo, sep=';', encoding='utf-8', decimal=',')
 
     faltando = [c for c in colunas if c not in df.columns]
@@ -31,7 +30,6 @@ def ler_csv(caminho_arquivo, colunas):
 
 
 def inserir_dados(sql, dados, tabela):
-    """Executa o INSERT em lote e faz commit (ou rollback em caso de erro)."""
     conexao = conectar()
     cursor = conexao.cursor()
 
@@ -58,7 +56,6 @@ def carregar_jogos(caminho_arquivo):
     ]
     df = ler_csv(caminho_arquivo, colunas)
 
-    # O CSV traz dd/mm/aaaa; o MySQL espera aaaa-mm-dd (datas inválidas viram NULL)
     datas = pd.to_datetime(df['data_lancamento'], format='%d/%m/%Y', errors='coerce')
     df['data_lancamento'] = datas.dt.strftime('%Y-%m-%d').astype(object)
     df = df.where(pd.notnull(df), None)
