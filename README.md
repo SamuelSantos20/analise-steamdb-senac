@@ -177,3 +177,9 @@ Atualmente estão sendo realizadas as etapas de:
 ## Projeto acadêmico
 
 Projeto desenvolvido para fins acadêmicos durante o curso do **Senac**, com foco em análise de dados, banco de dados e utilização de dados públicos relacionados à plataforma Steam.
+
+## Configuração da conexão MySQL
+
+Instale as dependências com `pip install -r requirements.txt`. Copie `.env.example` para `.env` na raiz do projeto e preencha `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD` e `MYSQL_DATABASE`.
+
+O carregador lê esse arquivo independentemente da pasta de execução. Variáveis já definidas no ambiente têm prioridade. O `.env` é ignorado pelo Git e deve permanecer apenas na sua máquina.

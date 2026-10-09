@@ -1,14 +1,20 @@
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 import pandas as pd
 import mysql.connector
 
 
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+
 def conectar():
     # conexão com o banco de dados
     return mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="",
-        database="steamdb"
+        host=os.environ["MYSQL_HOST"],
+        user=os.environ["MYSQL_USER"],
+        password=os.environ["MYSQL_PASSWORD"],
+        database=os.environ["MYSQL_DATABASE"]
     )
 
 
