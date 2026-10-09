@@ -1,3 +1,3 @@
-CREATE DATABASE steamDB;
+CREATE DATABASE IF NOT EXISTS steamdb;
 
-USE steamDB;
+USE steamdb;

@@ -1,5 +1,5 @@
 CREATE TABLE plataformas(
- plataforma_id VARCHAR(10), 
- nome VARCHAR(50)
+jogo_id INT NOT NULL PRIMARY KEY,
+ nome VARCHAR(50) NOT NULL
  );
  

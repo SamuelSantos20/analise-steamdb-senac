@@ -1,0 +1,104 @@
+import pandas as pd
+import mysql.connector
+
+
+def conectar():
+    # conexão com o banco de dados
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="steamdb"
+    )
+
+
+def ler_csv(caminho_arquivo, colunas):
+    """Lê o CSV, valida as colunas esperadas e troca NaN por None (NULL no MySQL)."""
+    df = pd.read_csv(caminho_arquivo, sep=';', encoding='utf-8')
+
+    faltando = [c for c in colunas if c not in df.columns]
+    if faltando:
+        raise ValueError(f"Colunas ausentes em {caminho_arquivo}: {faltando}")
+
+    df = df[colunas].astype(object)
+    return df.where(pd.notnull(df), None)
+
+
+def inserir_dados(sql, dados, tabela):
+    """Executa o INSERT em lote e faz commit (ou rollback em caso de erro)."""
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    try:
+        cursor.executemany(sql, dados)
+        conexao.commit()
+        print(f"[{tabela}] {cursor.rowcount} registros inseridos com sucesso!")
+
+    except mysql.connector.Error as erro:
+        conexao.rollback()
+        print(f"[{tabela}] Erro ao inserir dados: {erro}")
+
+    finally:
+        cursor.close()
+        conexao.close()
+
+
+# insere os dados na tabela jogos
+def carregar_jogos(caminho_arquivo):
+    colunas = [
+        'jogo_id', 'nome', 'data_lancamento', 'preco', 'dlc_count',
+        'avaliacoes_positivas', 'avaliacoes_negativas',
+        'recomendacoes', 'metacritic_score', 'tempo_medio_jogo', 'tempo_mediano_jogo'
+    ]
+    df = ler_csv(caminho_arquivo, colunas)
+
+    sql = """
+        INSERT INTO jogos (
+            jogo_id, nome, data_lancamento, preco, dlc_count,
+            avaliacoes_positivas, avaliacoes_negativas,
+            recomendacoes, metacritic_score, tempo_medio_jogo, tempo_mediano_jogo
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE nome = VALUES(nome) -- Opcional: atualiza se já existir
+    """
+
+    inserir_dados(sql, list(df.itertuples(index=False, name=None)), "jogos")
+
+# insere os dados na tabela generos
+def carregar_generos(caminho_arquivo):
+    df = ler_csv(caminho_arquivo, ['genero_id', 'nome'])
+
+    sql = """
+        INSERT INTO generos (genero_id, nome)
+        VALUES (%s, %s)
+        ON DUPLICATE KEY UPDATE nome = VALUES(nome)
+    """
+
+    inserir_dados(sql, list(df.itertuples(index=False, name=None)), "generos")
+
+# insere os dados na tabela idiomas
+def carregar_idiomas(caminho_arquivo):
+    df = ler_csv(caminho_arquivo, ['idioma_id', 'nome'])
+
+    # A tabela idiomas não tem PRIMARY KEY: rodar duas vezes duplica os registros.
+    sql = "INSERT INTO idiomas (idioma_id, nome) VALUES (%s, %s)"
+
+    inserir_dados(sql, list(df.itertuples(index=False, name=None)), "idiomas")
+
+
+# insere os dados na tabela plataformas
+def carregar_plataformas(caminho_arquivo):
+    df = ler_csv(caminho_arquivo, ['plataforma_id', 'nome'])
+
+    # A tabela plataformas não tem PRIMARY KEY: rodar duas vezes duplica os registros.
+    sql = "INSERT INTO plataformas (plataforma_id, nome) VALUES (%s, %s)"
+
+    inserir_dados(sql, list(df.itertuples(index=False, name=None)), "plataformas")
+
+
+# main
+if __name__ == "__main__":
+    # Caminhos para onde estão os CSVs
+    carregar_jogos(r"")
+    carregar_generos(r"")
+    carregar_idiomas(r"")
+    carregar_plataformas(r"")

@@ -1,3 +1,3 @@
 CREATE TABLE idiomas(
- idioma_id VARCHAR(10), 
- nome VARCHAR(100));
+ idioma_id INT NOT NULL PRIMARY KEY, 
+ nome VARCHAR(100) NOT NULL);
