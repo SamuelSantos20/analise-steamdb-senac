@@ -2,6 +2,8 @@ import os
 
 from pathlib import Path
 from dotenv import load_dotenv
+import matplotlib.pyplot as plt
+
 import pandas as pd
 import mysql.connector
 import matplotlib.pyplot as plt
