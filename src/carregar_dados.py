@@ -52,7 +52,7 @@ def carregar_jogos(caminho_arquivo):
     colunas = [
         'jogo_id', 'nome', 'data_lancamento', 'preco', 'dlc_count',
         'avaliacoes_positivas', 'avaliacoes_negativas',
-        'recomendacoes', 'metacritic_score', 'tempo_medio_jogo', 'tempo_mediano_jogo'
+        'recomendacoes', 'metacritic_score', 'tempo_medio_jogo', 'tempo_mediano_jogo','generos'
     ]
     df = ler_csv(caminho_arquivo, colunas)
 
@@ -64,8 +64,8 @@ def carregar_jogos(caminho_arquivo):
         INSERT INTO jogos (
             jogo_id, nome, data_lancamento, preco, dlc_count,
             avaliacoes_positivas, avaliacoes_negativas,
-            recomendacoes, metacritic_score, tempo_medio_jogo, tempo_mediano_jogo
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            recomendacoes, metacritic_score, tempo_medio_jogo, tempo_mediano_jogo,generos
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
         ON DUPLICATE KEY UPDATE nome = VALUES(nome) -- Opcional: atualiza se já existir
     """
 
@@ -106,7 +106,7 @@ def carregar_plataformas(caminho_arquivo):
 # main
 if __name__ == "__main__":
     # Caminhos para onde estão os CSVs
-    carregar_jogos(r"")
-    carregar_generos(r"")
-    carregar_idiomas(r"")
-    carregar_plataformas(r"")
+    carregar_jogos(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\jogos.csv")
+    carregar_generos(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\generos.csv")
+    carregar_idiomas(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\idiomas.csv")
+    carregar_plataformas(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\plataformas.csv")

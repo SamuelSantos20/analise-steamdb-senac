@@ -36,9 +36,9 @@ dados_filtrados = obter_dados_do_banco(query_precos)
 media_precos = np.mean(dados_filtrados)
 mediana_precos = np.median(dados_filtrados)
 
-print(f"Média dos preços: {media_precos}")
-print(f"Mediana dos preços: {mediana_precos}")
+print(f"Média dos preços: {media_precos:.2f}" )
+print(f"Mediana dos preços: {mediana_precos:.2f}")
 
-if dados_filtrados:
+'''if dados_filtrados:
     for jogos in dados_filtrados:
-        print(jogos) 
+        print(jogos) '''

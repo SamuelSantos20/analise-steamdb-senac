@@ -3,14 +3,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import mysql.connector
+import os
+from dotenv import load_dotenv
+from pathlib import Path
+
+
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 def obter_dados_do_banco(query):
     try:
         conexao = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="",
-            database="steamdb"
+            host=os.environ["MYSQL_HOST"],
+            user=os.environ["MYSQL_USER"],
+            password=os.environ["MYSQL_PASSWORD"],
+            database=os.environ["MYSQL_DATABASE"]
         )
         cursor = conexao.cursor()
         cursor.execute(query)

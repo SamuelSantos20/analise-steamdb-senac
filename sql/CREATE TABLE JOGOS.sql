@@ -9,5 +9,6 @@ CREATE TABLE jogos(
     recomendacoes INT NOT NULL, 
     metacritic_score INT, 
     tempo_medio_jogo INT NOT NULL, 
-    tempo_mediano_jogo INT NOT NULL);
+    tempo_mediano_jogo INT NOT NULL,
+    gereros VARCHAR(50) NOT NULL);
  
