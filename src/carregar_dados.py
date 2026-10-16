@@ -52,7 +52,8 @@ def carregar_jogos(caminho_arquivo):
     colunas = [
         'jogo_id', 'nome', 'data_lancamento', 'preco', 'dlc_count',
         'avaliacoes_positivas', 'avaliacoes_negativas',
-        'recomendacoes', 'metacritic_score', 'tempo_medio_jogo', 'tempo_mediano_jogo','generos'
+        'recomendacoes', 'metacritic_score', 'tempo_medio_jogo', 'tempo_mediano_jogo',
+        'generos', 'idade_minima'
     ]
     df = ler_csv(caminho_arquivo, colunas)
 
@@ -64,9 +65,10 @@ def carregar_jogos(caminho_arquivo):
         INSERT INTO jogos (
             jogo_id, nome, data_lancamento, preco, dlc_count,
             avaliacoes_positivas, avaliacoes_negativas,
-            recomendacoes, metacritic_score, tempo_medio_jogo, tempo_mediano_jogo,generos
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
-        ON DUPLICATE KEY UPDATE nome = VALUES(nome) -- Opcional: atualiza se já existir
+            recomendacoes, metacritic_score, tempo_medio_jogo, tempo_mediano_jogo,
+            generos, idade_minima
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE nome = VALUES(nome), idade_minima = VALUES(idade_minima)
     """
 
     inserir_dados(sql, list(df.itertuples(index=False, name=None)), "jogos")

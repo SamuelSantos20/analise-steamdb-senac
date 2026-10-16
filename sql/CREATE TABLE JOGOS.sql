@@ -10,5 +10,5 @@ CREATE TABLE jogos(
     metacritic_score INT, 
     tempo_medio_jogo INT NOT NULL, 
     tempo_mediano_jogo INT NOT NULL,
-    gereros VARCHAR(50) NOT NULL);
- 
+    generos VARCHAR(255) NOT NULL DEFAULT '',
+    idade_minima TINYINT UNSIGNED NOT NULL DEFAULT 0);
