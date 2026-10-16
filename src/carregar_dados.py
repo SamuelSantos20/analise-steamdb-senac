@@ -108,7 +108,6 @@ def carregar_plataformas(caminho_arquivo):
 # main
 if __name__ == "__main__":
     # Caminhos para onde estão os CSVs
-    carregar_jogos(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\jogos.csv")
-    carregar_generos(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\generos.csv")
-    carregar_idiomas(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\idiomas.csv")
-    carregar_plataformas(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\plataformas.csv")
+    carregar_jogos(r"C:\Users\biblioteca.nig3\Documents\OneDrive_1_16-10-2026\jogos.csv")
+    carregar_idiomas(r"C:\Users\biblioteca.nig3\Documents\OneDrive_1_16-10-2026\idiomas.csv")
+    carregar_plataformas(r"C:\Users\biblioteca.nig3\Documents\OneDrive_1_16-10-2026\plataformas.csv")
