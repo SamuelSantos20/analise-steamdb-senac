@@ -54,7 +54,18 @@ std_avaliacao = np.std(dados_avaliacao,ddof=0) # Desvio padrão populacional
 
 
 
-assimetria = skew(dados_avaliacao, bias=False)
+assimetria = sns.histplot(
+    np.log1p(dados_avaliacao),
+    kde=True,
+    bins=50,
+    color='skyblue'
+)
+
+plt.title('Distribuição das Avaliações Positivas — Escala Logarítmica')
+plt.xlabel('log(1 + quantidade de avaliações positivas)')
+plt.ylabel('Quantidade de jogos')
+plt.show()
+#skew(dados_avaliacao, bias=False)
 curtose = kurtosis(dados_avaliacao, fisher=False, bias=False)
 curtose_real_avaliacao = kurtosis(
     dados_avaliacao,
