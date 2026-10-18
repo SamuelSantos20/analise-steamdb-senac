@@ -31,7 +31,7 @@ def obter_dados_do_banco(query):
             cursor.close()
             conexao.close()
 
-query_dlc = "SELECT dlc_count FROM jogos"
+query_dlc = "SELECT dlc_count FROM jogos WHERE dlc_count >0"
 resultados = obter_dados_do_banco(query_dlc)
 
 if not resultados:
