@@ -78,6 +78,9 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# Arquivos temporários de bloqueio do LibreOffice
+.~lock.*#
+
 # IPython
 profile_default/
 ipython_config.py

@@ -10,7 +10,7 @@ import numpy as np
 from scipy.stats import skew, kurtosis
 
 
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 def obter_dados_do_banco(query):
     try:

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import numpy as np
 import mysql.connector
 
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 def obter_dados_do_banco(query):
     try:
@@ -28,7 +28,7 @@ def obter_dados_do_banco(query):
             cursor.close()
             conexao.close()
 
-# Carregar os dados do banco (mesmo filtro da query em sql/ESTATISTICAS TEMPO MEDIO JOGO.sql)
+# Carregar os dados do banco (mesmo filtro da query em sql/consultas/ESTATISTICAS TEMPO MEDIO JOGO.sql)
 query_tempo = "SELECT tempo_medio_jogo FROM jogos WHERE tempo_medio_jogo > 0"
 resultados = obter_dados_do_banco(query_tempo)
 

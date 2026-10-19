@@ -1,4 +1,3 @@
-import polars as pl
 import os
 
 from pathlib import Path
@@ -11,8 +10,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 def obter_dados_do_banco(query):
     try:
@@ -34,17 +32,15 @@ def obter_dados_do_banco(query):
             cursor.close()
             conexao.close()
 
+# Usando a função
+query_precos = "SELECT preco FROM jogos WHERE preco > 0"
+dados_filtrados = obter_dados_do_banco(query_precos)
+media_precos = np.mean(dados_filtrados)
+mediana_precos = np.median(dados_filtrados)
 
-query = 'SELECT preco FROM jogos'
+print(f"Média dos preços: {media_precos:.2f}" )
+print(f"Mediana dos preços: {mediana_precos:.2f}")
 
-dados = obter_dados_do_banco(query)
-
-df = pl.DataFrame(dados, schema = ['preco'], orient = 'row')
-
-precos = df['preco'].to_list()
-
-plt.hist(precos, bins = 30)
-plt.title('PREÇOS DOS JOGOS')
-plt.xlabel('PREÇO')
-plt.ylabel('QUANTIDADE DE JOGOS')
-plt.show()
+'''if dados_filtrados:
+    for jogos in dados_filtrados:
+        print(jogos) '''

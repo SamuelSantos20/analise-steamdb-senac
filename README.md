@@ -49,7 +49,7 @@ Os dados originais serão mantidos separados dos dados tratados para preservar a
 
 ## Tecnologias utilizadas
 
-- PostgreSQL
+- MySQL
 - SQL
 - Python
 - Pandas
@@ -61,53 +61,43 @@ Os dados originais serão mantidos separados dos dados tratados para preservar a
 
 ```text
 analise-steamdb-senac/
-│
 ├── dados/
-│   ├── original/
+│   ├── originais/              # reservado para arquivos brutos
 │   └── tratados/
-│
+│       ├── csv/               # arquivos usados na carga do banco
+│       ├── parquet/           # exportação da planilha em Parquet
+│       └── planilhas/         # versões XLSX dos dados tratados
 ├── sql/
-│   ├── criacao_tabelas.sql
-│   ├── importacao_dados.sql
-│   └── consultas.sql
-│
-├── notebooks/
-│   └── analise_steam.ipynb
-│
+│   ├── esquema/              # criação do banco e das tabelas
+│   └── consultas/            # consultas de análise
 ├── src/
-│   ├── limpeza_dados.py
-│   └── analise_dados.py
-│
-├── docs/
-│   └── modelo_banco.md
-│
+│   ├── analises/             # estatísticas e gráficos em Python
+│   ├── banco/                # consulta e conexão de teste
+│   └── carga/                # importação e exportação dos dados
+├── notebooks/                # relatório executável da análise
 ├── resultados/
-│   ├── graficos/
-│   └── relatorios/
-│
+│   ├── graficos/             # figuras das análises
+│   └── relatorios/           # resultados tabulares da validação
+├── requirements.txt
+├── .env.example
 ├── .gitignore
 └── README.md
 ```
 
 ## Modelagem do banco de dados
 
-A base será organizada no PostgreSQL utilizando um modelo relacional.
+A base é carregada no MySQL utilizando um modelo relacional.
 
-A estrutura inicial poderá ser dividida em tabelas como:
+A estrutura contém as tabelas `jogos`, `idiomas` e `plataformas`, além de `jogos_idiomas` e `jogos_plataformas` para as relações muitos-para-muitos. Os gêneros ficam na coluna `generos` de `jogos`, sem tabela própria.
 
-- jogos;
+Para uma evolução futura da modelagem, outras entidades poderão ser separadas em tabelas como:
+
 - empresas;
 - jogos_empresas;
-- gêneros;
-- jogos_generos;
 - categorias;
 - jogos_categorias;
 - tags;
 - jogos_tags;
-- idiomas;
-- jogos_idiomas;
-- plataformas;
-- jogos_plataformas;
 - mídias.
 
 Essa divisão permite reduzir duplicações e organizar melhor informações que possuem múltiplos valores para um mesmo jogo.
@@ -119,7 +109,7 @@ Essa divisão permite reduzir duplicações e organizar melhor informações que
 3. Limpeza e tratamento dos dados.
 4. Criação da coluna de ano de lançamento.
 5. Modelagem do banco de dados.
-6. Criação das tabelas no PostgreSQL.
+6. Criação das tabelas no MySQL.
 7. Importação dos dados.
 8. Criação de consultas SQL.
 9. Análise exploratória dos dados.
@@ -150,7 +140,7 @@ Os arquivos serão separados em duas categorias:
 Arquivos obtidos diretamente da fonte, sem alterações.
 
 ```text
-dados/original/
+dados/originais/
 ```
 
 ### Dados tratados
@@ -158,7 +148,9 @@ dados/original/
 Arquivos utilizados após limpeza, organização ou criação de novas colunas.
 
 ```text
-dados/tratados/
+dados/tratados/csv/
+dados/tratados/parquet/
+dados/tratados/planilhas/
 ```
 
 Essa separação permite preservar os dados originais e manter um histórico das transformações realizadas.
@@ -171,7 +163,7 @@ Atualmente estão sendo realizadas as etapas de:
 
 - organização da base de dados;
 - tratamento dos arquivos CSV;
-- planejamento da modelagem no PostgreSQL;
+- planejamento da modelagem no MySQL;
 - definição das análises que serão realizadas.
 
 ## Projeto acadêmico
@@ -183,3 +175,15 @@ Projeto desenvolvido para fins acadêmicos durante o curso do **Senac**, com foc
 Instale as dependências com `pip install -r requirements.txt`. Copie `.env.example` para `.env` na raiz do projeto e preencha `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD` e `MYSQL_DATABASE`.
 
 O carregador lê esse arquivo independentemente da pasta de execução. Variáveis já definidas no ambiente têm prioridade. O `.env` é ignorado pelo Git e deve permanecer apenas na sua máquina.
+
+Crie o banco com `CREATE DATABASE.sql`. Execute os scripts de `jogos`, `idiomas` e `plataformas` antes dos scripts `JOGOS_IDIOMAS` e `JOGOS_PLATAFORMAS`, pois as chaves estrangeiras dependem das tabelas principais. Depois execute `python src/carga/carregar_dados.py` a partir da raiz do projeto. O carregador usa os três arquivos de `dados/tratados/csv/` por caminhos relativos ao projeto. O CSV de jogos já contém `generos` e `idade_minima`; gêneros ausentes são carregados como texto vazio.
+
+Para preencher as tabelas de associação a partir de `dados/tratados/planilhas/steam_2026_organizada.xlsx`, execute `python src/carga/carregar_relacoes.py` para validar os dados e gerar `resultados/relatorios/idiomas_nao_mapeados.csv`. Depois execute `python src/carga/carregar_relacoes.py --apply` para inserir os pares válidos. A carga pode ser repetida sem duplicar os pares.
+
+As tabelas de conexão são definidas em `sql/esquema/CREATE TABLE JOGOS_IDIOMAS.sql` e `sql/esquema/CREATE TABLE JOGOS_PLATAFORMAS.sql`.
+
+Os scripts de análise ficam em `src/analises/`; o script de consulta de teste fica em `src/banco/`. Execute cada script com `python src/analises/NOME_DO_SCRIPT.py`. Os quatro gráficos fornecidos para o projeto estão em `resultados/graficos/`.
+
+O relatório executável com as consultas, resultados e quatro gráficos está em `notebooks/relatorio_analise_steam.ipynb`.
+
+Para gerar a versão Parquet da aba `Jogos` da planilha, execute `python src/carga/exportar_parquet.py`. O arquivo resultante fica em `dados/tratados/parquet/`.

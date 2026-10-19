@@ -6,7 +6,7 @@ import pandas as pd
 import mysql.connector
 
 
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 def conectar():
     # conexão com o banco de dados
@@ -49,13 +49,14 @@ def inserir_dados(sql, dados, tabela):
 
 # insere os dados na tabela jogos
 def carregar_jogos(caminho_arquivo):
-    colunas = [
+    colunas_csv = [
         'jogo_id', 'nome', 'data_lancamento', 'preco', 'dlc_count',
         'avaliacoes_positivas', 'avaliacoes_negativas',
         'recomendacoes', 'metacritic_score', 'tempo_medio_jogo', 'tempo_mediano_jogo',
-        'generos', 'idade_minima'
+        'generos', 'idade_minima',
     ]
-    df = ler_csv(caminho_arquivo, colunas)
+    df = ler_csv(caminho_arquivo, colunas_csv)
+    df['generos'] = df['generos'].fillna('')
 
     datas = pd.to_datetime(df['data_lancamento'], format='%d/%m/%Y', errors='coerce')
     df['data_lancamento'] = datas.dt.strftime('%Y-%m-%d').astype(object)
@@ -68,29 +69,31 @@ def carregar_jogos(caminho_arquivo):
             recomendacoes, metacritic_score, tempo_medio_jogo, tempo_mediano_jogo,
             generos, idade_minima
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        ON DUPLICATE KEY UPDATE nome = VALUES(nome), idade_minima = VALUES(idade_minima)
+        ON DUPLICATE KEY UPDATE
+            nome = VALUES(nome),
+            data_lancamento = VALUES(data_lancamento),
+            preco = VALUES(preco),
+            dlc_count = VALUES(dlc_count),
+            avaliacoes_positivas = VALUES(avaliacoes_positivas),
+            avaliacoes_negativas = VALUES(avaliacoes_negativas),
+            recomendacoes = VALUES(recomendacoes),
+            metacritic_score = VALUES(metacritic_score),
+            tempo_medio_jogo = VALUES(tempo_medio_jogo),
+            tempo_mediano_jogo = VALUES(tempo_mediano_jogo),
+            generos = VALUES(generos),
+            idade_minima = VALUES(idade_minima)
     """
 
     inserir_dados(sql, list(df.itertuples(index=False, name=None)), "jogos")
-
-# insere os dados na tabela generos
-def carregar_generos(caminho_arquivo):
-    df = ler_csv(caminho_arquivo, ['genero_id', 'nome'])
-
-    sql = """
-        INSERT INTO generos (genero_id, nome)
-        VALUES (%s, %s)
-        ON DUPLICATE KEY UPDATE nome = VALUES(nome)
-    """
-
-    inserir_dados(sql, list(df.itertuples(index=False, name=None)), "generos")
 
 # insere os dados na tabela idiomas
 def carregar_idiomas(caminho_arquivo):
     df = ler_csv(caminho_arquivo, ['idioma_id', 'nome'])
 
-    # A tabela idiomas não tem PRIMARY KEY: rodar duas vezes duplica os registros.
-    sql = "INSERT INTO idiomas (idioma_id, nome) VALUES (%s, %s)"
+    sql = """
+        INSERT INTO idiomas (idioma_id, nome) VALUES (%s, %s)
+        ON DUPLICATE KEY UPDATE nome = VALUES(nome)
+    """
 
     inserir_dados(sql, list(df.itertuples(index=False, name=None)), "idiomas")
 
@@ -99,15 +102,17 @@ def carregar_idiomas(caminho_arquivo):
 def carregar_plataformas(caminho_arquivo):
     df = ler_csv(caminho_arquivo, ['plataforma_id', 'nome'])
 
-    # A tabela plataformas não tem PRIMARY KEY: rodar duas vezes duplica os registros.
-    sql = "INSERT INTO plataformas (plataforma_id, nome) VALUES (%s, %s)"
+    sql = """
+        INSERT INTO plataformas (plataforma_id, nome) VALUES (%s, %s)
+        ON DUPLICATE KEY UPDATE nome = VALUES(nome)
+    """
 
     inserir_dados(sql, list(df.itertuples(index=False, name=None)), "plataformas")
 
 
 # main
 if __name__ == "__main__":
-    # Caminhos para onde estão os CSVs
-    carregar_jogos(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\jogos.csv")
-    carregar_idiomas(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\idiomas.csv")
-    carregar_plataformas(r"C:\Users\samuel.miranda\Documents\OneDrive_1_09-10-2026\plataformas.csv")
+    pasta_csv = Path(__file__).resolve().parents[2] / "dados" / "tratados" / "csv"
+    carregar_jogos(pasta_csv / "jogos.csv")
+    carregar_idiomas(pasta_csv / "idiomas.csv")
+    carregar_plataformas(pasta_csv / "plataformas.csv")

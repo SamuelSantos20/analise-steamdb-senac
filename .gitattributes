@@ -1,1 +1,1 @@
-dados/tratados/steam_2026_organizada.xlsx filter=lfs diff=lfs merge=lfs -text
+dados/tratados/planilhas/steam_2026_organizada.xlsx filter=lfs diff=lfs merge=lfs -text
