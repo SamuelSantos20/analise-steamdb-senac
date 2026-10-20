@@ -28,7 +28,6 @@ def obter_dados_do_banco(query):
             cursor.close()
             conexao.close()
 
-# Carregar os dados do banco (mesmo filtro da query em sql/consultas/ESTATISTICAS TEMPO MEDIO JOGO.sql)
 query_tempo = "SELECT tempo_medio_jogo FROM jogos WHERE tempo_medio_jogo > 0"
 resultados = obter_dados_do_banco(query_tempo)
 
@@ -72,8 +71,7 @@ print(f"Conclusão da Dispersão: {analise_tempo}")
 
 print("-" * 100)
 
-# Conferência: mesma query agregada do arquivo SQL, calculada direto no MySQL
-query_estatisticas = """
+query_estatisticas = '''
 SELECT
     COUNT(*) AS quantidade_jogos,
     ROUND(AVG(tempo_medio_jogo), 2) AS media_tempo,
@@ -81,7 +79,7 @@ SELECT
     ROUND(STDDEV_POP(tempo_medio_jogo), 2) AS desvio_padrao_tempo
 FROM jogos
 WHERE tempo_medio_jogo > 0
-"""
+'''
 estatisticas_sql = obter_dados_do_banco(query_estatisticas)
 
 if estatisticas_sql:
